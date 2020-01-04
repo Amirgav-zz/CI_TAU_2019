@@ -1,0 +1,277 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{dsfont}
+\usepackage{amsmath}
+\usepackage{mdsymbol}
+\usepackage{xcolor}
+\usepackage[thinlines]{easytable}
+\usepackage{tikz}
+
+
+
+\title{Causal Inference - assignment 3}
+\author{Amir Gavrieli}
+\date{19.12.19}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Consider the DAG in Figure 1. For each of the following pairs of nodes, list: (1) all possible paths between them (2) what set of nodes is required (in a d-separation sense) to block all of their paths: \\
+\textit{Note that I wrote in (1) paths that are also blocked by colliders, that is if the collider is not observed in the path then the information doesn't "flow" through that path.}
+\subsection{$W\rightarrow{}S$}
+\subsubsection{List of all possible paths between them:}
+
+\begin{itemize}
+    \item $W \rightarrow{} Y \rightarrow{} R \rightarrow{} S$
+    \item $W \rightarrow{} Y \rightarrow{} R \leftarrow{} Z \rightarrow{} S$
+    \item $W \rightarrow{} Y \leftarrow{} X \rightarrow{} Z \rightarrow{} S$
+    \item $W \rightarrow{} Y \leftarrow{} X \rightarrow{} Z \rightarrow{} R \rightarrow S$
+\end{itemize}
+\subsubsection{What set of nodes is required to block all of their paths:}
+We will call the set of nodes $\mathbf{Z}$ (not to be confused with the $z$ in the graph). Let us consider what are the constraints on $\mathbf{Z}$ for each path respectively:
+\begin{itemize}
+    \item $\mathbf{Z} \cap \{Y,R\} \neq \emptyset$
+    \item $\mathbf{Z} \cap \{Y,R\} \neq \emptyset$  $\lor$ $R \notin \mathbf{Z}$
+    \item $\mathbf{Z} \cap \{X,Z\} \neq \emptyset$  $\lor$ $Y \notin \mathbf{Z}$
+    \item $\mathbf{Z} \cap \{X,Z,R\} \neq \emptyset$  $\lor$ $Y \notin \mathbf{Z}$
+\end{itemize}
+From the intersection of these constraints we get: $\mathbf{Z} = \{Y, X\}$.
+
+\subsection{$X\rightarrow{}T$}
+\subsubsection{List of all possible paths between them:}
+\begin{itemize}
+    \item $X\rightarrow{}Y\rightarrow{}R\rightarrow{}T$
+    \item $X\rightarrow{}Z\rightarrow{}R\rightarrow{}T$
+    \item $X\rightarrow{}Z\rightarrow{}S\leftarrow{}R\rightarrow{}T$
+\end{itemize}
+\subsubsection{What set of nodes is required to block all of their paths:}
+We will call the set of nodes $\mathbf{Z}$ (not to be confused with the $z$ in the graph). Let us consider what are the constraints on $\mathbf{Z}$ for each path respectively:
+\begin{itemize}
+    \item $\mathbf{Z} \cap \{Y,R\} \neq \emptyset$
+    \item $\mathbf{Z} \cap \{Z,R\} \neq \emptyset$
+    \item $\mathbf{Z} \cap \{Z,R\} \neq \emptyset$ $\lor$ $S \notin \mathbf{Z}$
+\end{itemize}
+From the intersection of these constraints we get: $\mathbf{Z} = \{R\}$. Note that we could have also chosen $\mathbf{Z} = \{Z,Y\}$, $\mathbf{Z} = \{R\}$ is simply the smallest set.
+
+\subsection{$Y\rightarrow{}H$}
+\subsubsection{List of all possible paths between them:}
+\begin{itemize}
+    \item $Y\leftarrow{}X\rightarrow{}Z\leftarrow{}H$
+    \item $Y\rightarrow{}R\leftarrow{}Z\leftarrow{}H$
+    \item $Y\rightarrow{}R\rightarrow {}S\leftarrow{}Z\leftarrow{}H$
+\end{itemize}
+\subsubsection{What set of nodes is required to block all of their paths:}
+Similar to the sections above the constraints on $\mathbf{Z}$ are as follows:
+\begin{itemize}
+    \item $\mathbf{Z} \cap \{X\} \neq \emptyset$ $\lor$ $Z \notin \mathbf{Z}$
+    \item $\mathbf{Z} \cap \{Z\} \neq \emptyset$ $\lor$ $R \notin \mathbf{Z}$
+    \item $\mathbf{Z} \cap \{R,Z\} \neq \emptyset$ $\lor$ $S \notin \mathbf{Z}$
+    \end{itemize}
+The easiest $\mathbf{Z}$ to consider is $\emptyset{}$ since every path has a collider.
+
+\newpage
+\section*{Question 2}
+Consider the causal graph in Figure 2.
+\subsection*{(i) List all the sets of variables that satisfy the backdoor criterion to determine the causal effect of $T$ on $Y$.}
+The first part of the back-door criterion is that no decendants of $T$ can be in any $\mathbf{Z}$, hence we know that for every set $\mathbf{Z}$, $W\notin \mathbf{Z}$.
+To satisfy the second backdoor criterion we wish to block all paths between $T$ and $Y$ that end with an arrow into $T$, these paths are:
+\begin{itemize}
+    \item $T\leftarrow{}Z\rightarrow{}Y$
+    \item $T\leftarrow{}Z\leftarrow{}C\rightarrow{}D\rightarrow{}Y$
+    \item $T\leftarrow{}A\leftarrow{}B\rightarrow{}Z\rightarrow{}Y$
+    \item $T\leftarrow{}A\leftarrow{}B\rightarrow{}Z\leftarrow{}C\rightarrow{}D\rightarrow{}Y$
+\end{itemize}
+The criteria for d-separating each path are as follows:
+\begin{itemize}
+    \item $Z\in{}\mathbf{Z}$
+    \item $\mathbf{Z}\cap{}\{Z,C,D\}\neq{}\emptyset{}$
+    \item $\mathbf{Z}\cap{}\{A,B,Z\}\neq{}\emptyset{}$
+    \item $Z\notin{}\mathbf{Z}$ $\lor$ $\mathbf{Z}\cap{}\{A,B,C,D\}\neq{}\emptyset{}$
+\end{itemize}
+Thus the sets are as follows: 
+\begin{itemize}
+    \item $\{Z, A\}$
+    \item $\{Z, B\}$
+    \item $\{Z, C\}$
+    \item $\{Z, D\}$
+    \item $\{Z, A, B\}$
+    \item $\{Z, A, C\}$
+    \item $\{Z, A, D\}$
+    \item $\{Z, B, C\}$
+    \item $\{Z, B, D\}$
+    \item $\{Z, C, D\}$
+    \item $\{Z, A, B, C\}$
+    \item $\{Z, A, B, D\}$
+    \item $\{Z, A, C, D\}$
+    \item $\{Z, B, C, D\}$
+    \item $\{Z, A, B, C, D\}$
+\end{itemize}
+
+
+\subsection*{(ii) List all of the minimal sets of variables that satisfy the backdoor criterion to determine the causal effect of the $T$ on $Y$ (i.e., any set of variables such that, if you remove any one of the variables from the set, it would no longer meet the criterion).}
+Looking at the previous section the minimal sets are: 
+\begin{itemize}
+    \item $\{Z, A\}$
+    \item $\{Z, B\}$
+    \item $\{Z, C\}$
+    \item $\{Z, D\}$
+\end{itemize} 
+
+\subsection*{(iii) Give a minimal set of variables that need to be measured in order to identify the effect of $D$ on $Y$}
+The first part of the back-door criterion is that no decendants of $D$ can be in any $\mathbf{Z}$, but since $Y$ is the only decendant of $D$ we don't need to worry about it.
+To satisfy the second backdoor criterion we wish to block all paths between $D$ and $Y$ that end with an arrow into $D$. Since all these paths go through $C$, we can simply define \\
+$\mathbf{Z}=\{C\}$, note that a smaller set would have been the empty set, but that would only apply if we had no path between $D$ and $Y$ that end with an arrow into $D$, but we do. For example: $D\leftarrow{}C\rightarrow{}Z\rightarrow{}Y$
+
+\newpage
+\section*{Question 3}
+Consider the following scenario, which is loose adaptation of the LaLonde experiment (as described in the tutorial). You receive data collected from an experiments run in a 3 years (2024-2026) span in Gotham City, USA, trying to estimate the effect of job training on real income a year following the training. In the data (See Table 1), you have binary indicators for: prior education ($Z$), whether the annual real income in 2024 is higher than $50K\$$ ($X$), had job training ($T$), whether the annual real income in 2026 is higher than $100K\$$ ($Y$), and whether the citizen bought a house in 2026 ($W$). We know the following:
+\begin{enumerate}
+    \item The income in 2024 depends solely on the prior education.
+    \item A person is selected to the job training program based on her prior education, and income in 2024. 
+    \item The income in 2026 depends on the job training, prior education and income in 2024.
+    \item Whether a citizen purchased a house is directly based on her income in 2024 and 2026.
+\end{enumerate}
+Your task is as follows:
+\subsection{Draw the causal graph that describe the above experiment.}
+
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \node (Z) [circle] at (\linewidth*0.5, 5) {Z};
+    \node (T) [circle] at (\linewidth*0.5, 3) {T};
+    \node (Y) [circle] at (\linewidth*0.25, 2) {Y};
+    \node (X) [circle] at (\linewidth*0.75, 2) {X};
+    \node (W) [circle] at (\linewidth*0.5, 0) {W};
+    \draw (X) edge [->] (T);
+    \draw (X) edge [->] (Y);
+    \draw (X) edge [->] (W);
+    \draw (Z) edge [->] (T);
+    \draw (Z) edge [->] (X);
+    \draw (Z) edge [->] (Y);
+    \draw (T) edge [->] (Y);
+    \draw (Y) edge [->] (W);
+    \end{tikzpicture}
+    \caption{Causal graph describing the below experiment}
+
+\end{figure}
+
+\subsection{Calculate the ATE of the experiment (derive the necessary probabilities from Table 1)}
+We want to understand the income in 2026 ($Y$) given the treatment ($T$). 
+First we perform the DO operator on $T$ (removing all arrows into $T$).
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \node (Z) [circle] at (\linewidth*0.5, 5) {Z};
+    \node (T) [circle] at (\linewidth*0.5, 3) {T (DO(T=t))};
+    \node (Y) [circle] at (\linewidth*0.25, 2) {Y};
+    \node (X) [circle] at (\linewidth*0.75, 2) {X};
+    \node (W) [circle] at (\linewidth*0.5, 0) {W};
+    \draw (Z) edge [->] (X);
+    \draw (Z) edge [->] (Y);
+    % \draw (Z) edge [->] (T);
+    \draw (X) edge [->] (Y);
+    % \draw (X) edge [->] (T);
+    \draw (X) edge [->] (W);
+    \draw (T) edge [->] (Y);
+    \draw (Y) edge [->] (W);
+    \end{tikzpicture}
+    \caption{Causal graph that enables us to measure ATE.}
+    \label{fig:do_operator}
+\end{figure}
+
+\subsubsection*{Formula development}
+Let us note a couple of things:
+\begin{enumerate}
+	\item We recall that $ATE=\mathds{E}[y|do(T=1)]-\mathds{}[y|do(T=0]$.
+	\item Since $Y\in\{0,1\}$, $\mathds{E}[y|do(T=t)]=P(y=1|do(T=t))$.
+	\item From (1),(2): $ATE=P(y|do(T=1))-P(y|do(T=0))$.
+	\item We know that for a set of variables $\mathbf{Z}$ that satisfies the back-door criterion for $T,Y$: \\ $P(y|do(T=t))=\sum_{z \in{} \mathbf{Z}}P(y|T=t,Z=z) \cdot{} P(Z=z)$
+	\item To satisfy the second backdoor criterion we wish to block all paths between $T$ and $Y$ that end with an arrow into $T$, these paths are:
+	\begin{itemize}
+    		\item $T\leftarrow{}Z\rightarrow{}Y$
+		\item $T\leftarrow{}X\rightarrow{}Y$
+   		\item $T\leftarrow{}Z\rightarrow{}X\rightarrow{}Y$
+	\end{itemize}
+The criteria for d-separating each path are as follows:
+\begin{itemize}
+    \item $Z\in{}\mathbf{Z}$
+    \item $X\in{}\mathbf{Z}$
+    \item $\mathbf{Z}\cap{}\{Z,X\}\neq{}\emptyset{}$
+\end{itemize}
+So we get that $\mathbf{Z}=\{X,Z\}$, these corresponds to in some sense to what we did to the graph.
+\end{enumerate}
+
+Now Let us Calculate $\mathds{E}[y|do(T=t)]$:
+\begin{equation*}
+    \begin{split}
+	& \mathds{E}[y|do(T=t)] = P(y|do(T=t)) \\
+        & =\sum_{z \in{} \mathbf{Z}}P(y|T=t,Z=z) \cdot{} P(Z=z) \\
+        & =\sum_{z\in{}\{0,1\}}\sum_{x\in{}\{0,1\}}P(y|T=t, X=x, Z=z)\cdot{}P(X=x,Z=z)\\
+        & =\sum_{z\in{}\{0,1\}}\sum_{x\in{}\{0,1\}}P(y|T=t, X=x, Z=z)\cdot{}P(X=x|Z=z)\cdot{}P(Z=z) \\
+        & = P(y|T=t, X=0, Z=0)\cdot{}P(X=0|Z=0)\cdot{}P(Z=0) \\
+        & +P(y|T=t, X=1, Z=0)\cdot{}P(X=1|Z=0)\cdot{}P(Z=0) \\
+        & +P(y|T=t, X=1, Z=1)\cdot{}P(X=1|Z=1)\cdot{}P(Z=1) \\
+        & +P(y|T=t, X=0, Z=1)\cdot{}P(X=0|Z=1)\cdot{}P(Z=1) \\
+    \end{split}
+\end{equation*}
+
+
+
+Since we don't have the actual probabilities we will estimate them from the data, we are in fact using estimates of the probabilities, $\hat{P}$, but for convenience we shall continue to use $P$.
+\begin{itemize}
+	\item $\hat{P}(Z=1)=\frac{12}{20}=\frac{3}{5}$, $\hat{P}(Z=0)=\frac{8}{20}=\frac{2}{5}$
+	\item $\hat{P}(X=1|Z=0)=\frac{2}{8}=\frac{1}{4}$, $\hat{P}(X=0|Z=0)=\frac{6}{8}=\frac{3}{4}$
+	\item $\hat{P}(X=1|Z=1)=\frac{5}{12}$, $\hat{P}(X=0|Z=1)=\frac{7}{12}$
+	\item $\hat{P}(Y=1|T=1,Z=0,X=0)=\frac{1}{2}$
+	\item $\hat{P}(Y=1|T=1,Z=1,X=0)=\frac{1}{2}$
+	\item $\hat{P}(Y=1|T=1,Z=0,X=1)=1$
+	\item $\hat{P}(Y=1|T=1,Z=1,X=1)=1$
+	\item $\hat{P}(Y=1|T=0,Z=0,X=0)=0$
+	\item $\hat{P}(Y=1|T=0,Z=1,X=0)=\frac{2}{3}$
+	\item $\hat{P}(Y=1|T=0,Z=0,X=1)=1$
+	\item $\hat{P}(Y=1|T=0,Z=1,X=1)=\frac{2}{3}$
+\end{itemize}
+
+Let us calculate $Do(T=1)$:
+\begin{equation*}
+    \begin{split}
+	& \mathds{E}[y|do(T=1)] = P(y|do(T=1)) \\
+        & = P(y=1|T=1, X=0, Z=0)\cdot{}P(X=0|Z=0)\cdot{}P(Z=0) \\
+        & +P(y=1|T=1, X=1, Z=0)\cdot{}P(X=1|Z=0)\cdot{}P(Z=0) \\
+        & +P(y=1|T=1, X=1, Z=1)\cdot{}P(X=1|Z=1)\cdot{}P(Z=1) \\
+        & +P(y=1|T=1, X=0, Z=1)\cdot{}P(X=0|Z=1)\cdot{}P(Z=1) \\
+        & = \frac{1}{2} \cdot \frac{3}{4} \cdot \frac{2}{5} \\
+        & + 1 \cdot \frac{1}{4} \cdot \frac{2}{5} \\
+        & + 1 \cdot \frac{5}{12} \cdot \frac{3}{5} \\
+        & + \frac{1}{2} \cdot \frac{7}{12} \cdot \frac{3}{5} \\
+        & = \frac{27}{40}
+    \end{split}
+\end{equation*}
+
+Let us calculate $Do(T=0)$:
+\begin{equation*}
+    \begin{split}
+	& \mathds{E}[y|do(T=1)] = P(y|do(T=1)) \\
+        & = P(y=1|T=0, X=0, Z=0)\cdot{}P(X=0|Z=0)\cdot{}P(Z=0) \\
+        & +P(y=1|T=0, X=1, Z=0)\cdot{}P(X=1|Z=0)\cdot{}P(Z=0) \\
+        & +P(y=1|T=0, X=1, Z=1)\cdot{}P(X=1|Z=1)\cdot{}P(Z=1) \\
+        & +P(y=1|T=0, X=0, Z=1)\cdot{}P(X=0|Z=1)\cdot{}P(Z=1) \\
+        & = 0 \cdot \frac{3}{4} \cdot \frac{2}{5} \\
+        & + 1 \cdot \frac{1}{4} \cdot \frac{2}{5} \\
+        & + \frac{2}{3} \cdot \frac{5}{12} \cdot \frac{3}{5} \\
+        & + \frac{2}{3} \cdot \frac{7}{12} \cdot \frac{3}{5} \\
+        & = \frac{1}{2}
+    \end{split}
+\end{equation*}
+
+
+We get that the $\hat{ATE}$ is:
+\begin{equation*}
+    \hat{ATE} = \frac{27}{40} - \frac{1}{2} = \frac{7}{40}=0.175
+\end{equation*}
+
+\end{document}

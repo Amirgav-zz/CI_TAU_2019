@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{dsfont}
+\usepackage{amsmath}
+\usepackage{mdsymbol}
+\usepackage{xcolor}
+
+% \usepackage{nath}
+% \delimgrowth=1
+
+
+
+\title{Causal Inference - Exercise 1}
+\author{Amir Gavrieli}
+\date{15.11.2019}
+
+\begin{document}
+
+\maketitle
+
+\section*{Question 1}
+Using potential outcomes notation, give an example of a data generating process (a joint distribution) which includes a hidden confounder $H$, a binary treatment $t$, and two potential outcomes $Y_0$ and $Y_1$, such that:
+\begin{enumerate}
+    \item Ignorability does \textit{not} hold, and
+    \item $\mathds{E}[Y_1-Y_0]\neq{}\mathds{E}[Y|t=1]-\mathds{E}[Y|t=0]$, where $Y=t\cdot{}Y_1+(1-t)\cdot{}Y_0$
+\end{enumerate}
+
+\subsection*{Answer}
+Consider the following setup:
+	\begin{enumerate}
+		\item $x  {\sim}$\textit{Ber}($q$)
+		\item $T|x  {\sim}$\textit{Ber}($p_1x+p_2(1-x)$)
+	\end{enumerate}
+	And $Y$ is a linear function of $x,T$: $Y=4T+4x$\\ 
+	W conclude that:
+	\begin{itemize}
+		\item $Y_0= 4x$
+		\item $Y_1= 4+4x$
+	\end{itemize}
+	
+	First let us show that ignorability does not hold:
+	\begin{equation*}
+
+	\end{equation*}
+	
+
+\end{document}
